@@ -6,10 +6,6 @@ public class Vector {
 
     public float x, y, z;
 
-    void Start() {
-
-    }
-
     Vector(float a, float b, float c)
     {
         x = a;
