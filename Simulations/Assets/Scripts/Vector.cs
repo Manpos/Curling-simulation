@@ -6,7 +6,14 @@ public class Vector {
 
     public float x, y, z;
 
-    Vector(float a, float b, float c)
+    public Vector()
+    {
+        x = 0;
+        y = 0;
+        z = 0;
+    }
+
+    public Vector(float a, float b, float c)
     {
         x = a;
         y = b;
