@@ -20,19 +20,70 @@ public class Vector {
         z = c;
     }
 
-    public Vector cross(Vector a, Vector b)
+    public static Vector cross(Vector a, Vector b)
     {
-        return new Vector(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
+        return new Vector((a.y * b.z) - (a.z * b.y), -((a.x * b.z) - (b.x * a.z)), (a.x * b.y) - (b.x * a.y));
     }
 
-    public float dot(Vector a, Vector b)
+    public static float dot(Vector a, Vector b)
     {
         return a.x * b.x + a.y + b.y + a.z + b.z;
     }
 
-    public Vector normalize(Vector n)
+    public static Vector normalize(Vector n)
     {
-        float module = Mathf.Sqrt((n.x * n.x) + (n.y * n.y) + (n.z * n.z));
+        float module = Vector.module(n);
         return new Vector(n.x / module, n.y / module, n.z / module);
+    }
+
+    public Vector normalize()
+    {
+        float module = this.module();
+        return new Vector(x / module, y / module, z / module);
+    }
+
+    public static float module(Vector v)
+    {
+        return Mathf.Sqrt((v.x * v.x) + (v.y * v.y) + (v.z * v.z));
+    }
+
+    public float module()
+    {
+        return Mathf.Sqrt((x * x) + (y * y) + (z * z));
+    }
+
+    public static float distance(Vector n1, Vector n2)
+    {
+        return module(n2-n1);
+    }
+
+    public static Vector vector3ToVector(Vector3 v3)
+    {
+        return new Vector(v3.x, v3.y, v3.z);
+    }
+
+    public static Vector3 vectorToVector3(Vector v)
+    {
+        return new Vector3(v.x, v.y, v.z);
+    }
+
+    public static Vector operator +(Vector v1, Vector v2)
+    {
+        return new Vector(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
+    }
+
+    public static Vector operator -(Vector v1, Vector v2)
+    {
+        return new Vector(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
+    }
+
+    public static Vector operator *(float f, Vector v)
+    {
+        return new Vector(v.x * f, v.y * f, v.z * f);
+    }
+
+    public static Vector operator /(Vector v, float f)
+    {
+        return new Vector(v.x / f, v.y / f, v.z / f);
     }
 }
