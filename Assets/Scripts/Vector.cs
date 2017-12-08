@@ -8,9 +8,9 @@ public class Vector {
 
     public Vector()
     {
-        x = 0;
-        y = 0;
-        z = 0;
+        x = 0f;
+        y = 0f;
+        z = 0f;
     }
 
     public Vector(float a, float b, float c)
@@ -27,7 +27,7 @@ public class Vector {
 
     public static float dot(Vector a, Vector b)
     {
-        return a.x * b.x + a.y + b.y + a.z + b.z;
+        return a.x * b.x + a.y * b.y + a.z * b.z;
     }
 
     public static Vector normalize(Vector n)
