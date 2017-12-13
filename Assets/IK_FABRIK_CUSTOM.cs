@@ -10,13 +10,15 @@ public class IK_FABRIK_CUSTOM : MonoBehaviour
     struct MyJoint
     {
         public Vector position;
-        public float radius;
+        public float angle;
     }
 
     public Transform[] joints;
+    public float[] angleJoints;
     public Transform target;
 
     private MyJoint[] copy;
+    public Transform origin;
 
     //private Vector[] copy;
     private float[] distances;
@@ -31,6 +33,10 @@ public class IK_FABRIK_CUSTOM : MonoBehaviour
         maxIterations = 10;
         distances = new float[joints.Length - 1];
         copy = new MyJoint[joints.Length];
+        for (int i = 0; i < angleJoints.Length -1; i++)
+        {
+            copy[i].angle = angleJoints[i];
+        }
     }
 
     void Update()
@@ -92,6 +98,16 @@ public class IK_FABRIK_CUSTOM : MonoBehaviour
                     copy[0].position = b;
                     for (int i = 0; i < copy.Length - 1; i++)
                     {
+                        Vector l = new Vector();
+                        if (i == 0)
+                        {
+                            l = copy[0].position - Vector.vector3ToVector(origin.position);
+                        }
+                        else
+                            l = copy[i].position - copy[i - 1].position;
+
+
+
                         float r = Vector.distance(copy[i + 1].position, copy[i].position);
                         //float r = Vector3.Distance(copy[i + 1], copy[i]);
                         float lambda = distances[i] / r;
