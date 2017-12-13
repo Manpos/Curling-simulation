@@ -7,8 +7,16 @@ using UnityEngine;
 #if true
 public class IK_FABRIK_CUSTOM : MonoBehaviour
 {
+    struct MyJoint
+    {
+        Vector position;
+        float radius;
+    }
+
     public Transform[] joints;
     public Transform target;
+
+    private MyJoint[] copy;
 
     private Vector[] copy;
     private float[] distances;
