@@ -109,17 +109,29 @@ public class IK_FABRIK_CUSTOM : MonoBehaviour
 
                 float angle = Mathf.Atan2(sina, cosa) * Mathf.Rad2Deg;
 
-                Vector axisV = Vector.cross(init, now).normalize();
+                Vector axisV = new Vector();
+                MyQuaternion rotated = new MyQuaternion();
+                MyQuaternion current = new MyQuaternion();
+                MyQuaternion result = new MyQuaternion();
+
+                if (angle != 0)
+                {
+                    axisV = Vector.cross(init, now).normalize();
+
+                    rotated = MyQuaternion.axisAngle(axisV, angle);
+                    current = MyQuaternion.QuatToMyQuat(joints[i].rotation);
+
+                    result = rotated * current;
+                    Quaternion quatResult = new Quaternion(result.x, result.y, result.z, result.w);
+                    joints[i].rotation = quatResult;
+                }
+                
                 //Vector3 axis = new Vector3(axisV.x, axisV.y, axisV.z);
 
-                MyQuaternion rotated = MyQuaternion.axisAngle(axisV, angle);
-                MyQuaternion current = MyQuaternion.QuatToMyQuat(joints[i].rotation);
-
-                MyQuaternion result = rotated * current;
+               
                 //Quaternion rotated = Quaternion.AngleAxis(angle, axis);
                 //TODO 
-                Quaternion quatResult = new Quaternion(result.x, result.y, result.z, result.w);
-                joints[i].rotation = quatResult;
+                
                 joints[i + 1].position.Set(copy[i + 1].x, copy[i + 1].y, copy[i + 1].z);
 
             }
