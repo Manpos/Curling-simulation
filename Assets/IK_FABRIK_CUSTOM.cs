@@ -9,8 +9,8 @@ public class IK_FABRIK_CUSTOM : MonoBehaviour
 {
     struct MyJoint
     {
-        Vector position;
-        float radius;
+        public Vector position;
+        public float radius;
     }
 
     public Transform[] joints;
@@ -18,7 +18,7 @@ public class IK_FABRIK_CUSTOM : MonoBehaviour
 
     private MyJoint[] copy;
 
-    private Vector[] copy;
+    //private Vector[] copy;
     private float[] distances;
     private bool done;
 
@@ -30,26 +30,26 @@ public class IK_FABRIK_CUSTOM : MonoBehaviour
     {
         maxIterations = 10;
         distances = new float[joints.Length - 1];
-        copy = new Vector[joints.Length];
+        copy = new MyJoint[joints.Length];
     }
 
     void Update()
     {
         // Copy the joints positions to work with
         //TODO
-        copy[0] = Vector.vector3ToVector(joints[0].position);
+        copy[0].position = Vector.vector3ToVector(joints[0].position);
         for (int i = 0; i < copy.Length - 1; i++)
         {
-            copy[i + 1] = Vector.vector3ToVector(joints[i + 1].position);
-            distances[i] = Vector.distance(copy[i + 1], copy[i]);
+            copy[i + 1].position = Vector.vector3ToVector(joints[i + 1].position);
+            distances[i] = Vector.distance(copy[i + 1].position, copy[i].position);
         }
 
         //done = TODO
-        done = (copy[copy.Length - 1] - Vector.vector3ToVector(target.position)).module() < treshold_condition;
+        done = (copy[copy.Length - 1].position - Vector.vector3ToVector(target.position)).module() < treshold_condition;
         
         if (!done)
         {
-            float targetRootDist = Vector.distance(copy[0], Vector.vector3ToVector(target.position));
+            float targetRootDist = Vector.distance(copy[0].position, Vector.vector3ToVector(target.position));
             
             // Update joint positions
             if (targetRootDist > distances.Sum())
@@ -57,9 +57,9 @@ public class IK_FABRIK_CUSTOM : MonoBehaviour
                 // The target is unreachable
                 for (int i = 0; i < copy.Length - 1; i++)
                 {
-                    float r = (Vector.vector3ToVector(target.position) - copy[i]).module();
+                    float r = (Vector.vector3ToVector(target.position) - copy[i].position).module();
                     float lambda = distances[i] / r;
-                    copy[i + 1] = (1 - lambda) * copy[i] + (lambda * Vector.vector3ToVector(target.position));
+                    copy[i + 1].position = (1 - lambda) * copy[i].position + (lambda * Vector.vector3ToVector(target.position));
                     
                 }
 
@@ -68,9 +68,9 @@ public class IK_FABRIK_CUSTOM : MonoBehaviour
             {
                 int iter = 0;
                 // The target is reachable
-                Vector b = copy[0];
+                Vector b = copy[0].position;
 
-                float distance = Vector.distance(copy[joints.Length - 1], Vector.vector3ToVector(target.position));
+                float distance = Vector.distance(copy[joints.Length - 1].position, Vector.vector3ToVector(target.position));
                 //float distance = Vector3.Distance(copy[joints.Length - 1], target.position);
 
                 while (distance > treshold_condition && iter < maxIterations)
@@ -78,28 +78,28 @@ public class IK_FABRIK_CUSTOM : MonoBehaviour
                     iter++;
 
                     // STAGE 1: FORWARD REACHING
-                    copy[copy.Length - 1] = Vector.vector3ToVector(target.position);
+                    copy[copy.Length - 1].position = Vector.vector3ToVector(target.position);
                     //copy[copy.Length - 1] = target.position;
                     for (int i = copy.Length - 2; i > 0; i--)
                     {
-                        float r = Vector.distance(copy[i + 1], copy[i]);
+                        float r = Vector.distance(copy[i + 1].position, copy[i].position);
                         //float r = Vector3.Distance(copy[i + 1], copy[i]);
                         float lambda = distances[i] / r;
-                        copy[i] = (1 - lambda) * copy[i + 1] + (lambda * copy[i]);
+                        copy[i].position = (1 - lambda) * copy[i + 1].position + (lambda * copy[i].position);
                     }
 
                     // STAGE 2: BACKWARD REACHING
-                    copy[0] = b;
+                    copy[0].position = b;
                     for (int i = 0; i < copy.Length - 1; i++)
                     {
-                        float r = Vector.distance(copy[i + 1], copy[i]);
+                        float r = Vector.distance(copy[i + 1].position, copy[i].position);
                         //float r = Vector3.Distance(copy[i + 1], copy[i]);
                         float lambda = distances[i] / r;
-                        copy[i + 1] = (1 - lambda) * copy[i] + (lambda * copy[i + 1]);
+                        copy[i + 1].position = (1 - lambda) * copy[i].position + (lambda * copy[i + 1].position);
 
                     }
 
-                    distance = Vector.distance(copy[copy.Length - 1], Vector.vector3ToVector(target.position));
+                    distance = Vector.distance(copy[copy.Length - 1].position, Vector.vector3ToVector(target.position));
                     //distance = Vector3.Distance(copy[copy.Length - 1], target.position);
                 }
             }
@@ -108,7 +108,7 @@ public class IK_FABRIK_CUSTOM : MonoBehaviour
             for (int i = 0; i <= joints.Length - 2; i++)
             {
                 Vector init = Vector.vector3ToVector(joints[i + 1].position) - Vector.vector3ToVector(joints[i].position);
-                Vector now = copy[i + 1] - copy[i];
+                Vector now = copy[i + 1].position - copy[i].position;
                 //Vector3 now = copy[i + 1] - copy[i];
 
                 //float angle = Mathf.Acos(Vector3.Dot(init.normalized, now.normalized)) * Mathf.Rad2Deg;
@@ -140,7 +140,7 @@ public class IK_FABRIK_CUSTOM : MonoBehaviour
                 //Quaternion rotated = Quaternion.AngleAxis(angle, axis);
                 //TODO 
                 
-                joints[i + 1].position.Set(copy[i + 1].x, copy[i + 1].y, copy[i + 1].z);
+                joints[i + 1].position.Set(copy[i + 1].position.x, copy[i + 1].position.y, copy[i + 1].position.z);
 
             }
         }
