@@ -83,6 +83,9 @@ public class IK_FABRIK_CUSTOM : MonoBehaviour
                 {
                     iter++;
 
+
+                    // Constrians
+#if false
                     // STAGE 1: FORWARD REACHING
                     copy[copy.Length - 1].position = Vector.vector3ToVector(target.position);
                     //copy[copy.Length - 1] = target.position;
@@ -100,39 +103,32 @@ public class IK_FABRIK_CUSTOM : MonoBehaviour
                     {
                         
                         Vector l = new Vector();
-                        Vector l2 = new Vector();
                         if (i == 0)
                         {
                             l =(copy[0].position - Vector.vector3ToVector(origin.position)).normalize();
-                            l2 = copy[0].position + l;
                         }
                         else
                         {
                             l = (copy[i].position - copy[i - 1].position).normalize();
-                            l2 = copy[i].position + l;
                         }
 
                         // Vector between "target" and joint
                         Vector CT = copy[i + 1].position - copy[i].position;
 
                         // Calculate angle between CT and l
-                        float dotProduct = Vector.dot(CT, l2);
-                        float angle = (Mathf.Acos(dotProduct / (CT.module() * l2.module()))) * Mathf.Rad2Deg;
+                        float dotProduct = Vector.dot(CT.normalize(), l.normalize());
+                        float angle = (Mathf.Acos(dotProduct)) * Mathf.Rad2Deg;
 
 
                         if (angle > copy[i].angle)
                         {
-                            float S = Mathf.Cos(angle * Mathf.Deg2Rad) * CT.module();
-                            Vector O = S * l2.normalize();
-                            float M = Mathf.Tan(copy[i].angle * Mathf.Deg2Rad) * S;
+                            float S = Mathf.Cos(angle) * Mathf.Rad2Deg * CT.module();
+                            Vector O = S * l.normalize();
+                            float M = Mathf.Tan(copy[i].angle) * Mathf.Rad2Deg * S;
                             Vector OT = copy[i + 1].position - O;
                             Vector newT = M * OT.normalize();
                             copy[i + 1].position = newT;
-                            float r = Vector.distance(copy[i + 1].position, copy[i].position);
 
-                            //float r = Vector3.Distance(copy[i + 1], copy[i]);
-                            float lambda = distances[i] / r;
-                            copy[i + 1].position = (1 - lambda) * copy[i].position + (lambda * copy[i + 1].position);
                         }
                         else
                         {
@@ -146,6 +142,38 @@ public class IK_FABRIK_CUSTOM : MonoBehaviour
 
                     distance = Vector.distance(copy[copy.Length - 1].position, Vector.vector3ToVector(target.position));
                     //distance = Vector3.Distance(copy[copy.Length - 1], target.position);
+#endif
+
+
+                    // NO Constrians
+#if true
+                    // STAGE 1: FORWARD REACHING
+                    copy[copy.Length - 1].position = Vector.vector3ToVector(target.position);
+                    //copy[copy.Length - 1] = target.position;
+                    for (int i = copy.Length - 2; i > 0; i--)
+                    {
+                        float r = Vector.distance(copy[i + 1].position, copy[i].position);
+                        //float r = Vector3.Distance(copy[i + 1], copy[i]);
+                        float lambda = distances[i] / r;
+                        copy[i].position = (1 - lambda) * copy[i + 1].position + (lambda * copy[i].position);
+                    }
+
+                    // STAGE 2: BACKWARD REACHING
+                    copy[0].position = b;
+                    for (int i = 0; i < copy.Length - 1; i++)
+                    {
+                        
+                           float r = Vector.distance(copy[i + 1].position, copy[i].position);
+
+                            //float r = Vector3.Distance(copy[i + 1], copy[i]);
+                            float lambda = distances[i] / r;
+                            copy[i + 1].position = (1 - lambda) * copy[i].position + (lambda * copy[i + 1].position);
+                        
+                    }
+
+                    distance = Vector.distance(copy[copy.Length - 1].position, Vector.vector3ToVector(target.position));
+                    //distance = Vector3.Distance(copy[copy.Length - 1], target.position);
+#endif
                 }
             }
 
