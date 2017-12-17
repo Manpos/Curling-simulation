@@ -85,14 +85,13 @@ public class IK_FABRIK_CUSTOM : MonoBehaviour
 
 
                     // Constrians
-#if false
+#if true
                     // STAGE 1: FORWARD REACHING
                     copy[copy.Length - 1].position = Vector.vector3ToVector(target.position);
-                    //copy[copy.Length - 1] = target.position;
+                    
                     for (int i = copy.Length - 2; i > 0; i--)
                     {
                         float r = Vector.distance(copy[i + 1].position, copy[i].position);
-                        //float r = Vector3.Distance(copy[i + 1], copy[i]);
                         float lambda = distances[i] / r;
                         copy[i].position = (1 - lambda) * copy[i + 1].position + (lambda * copy[i].position);
                     }
@@ -101,7 +100,7 @@ public class IK_FABRIK_CUSTOM : MonoBehaviour
                     copy[0].position = b;
                     for (int i = 0; i < copy.Length - 1; i++)
                     {
-                        
+                        // Find the direction vector of the CONE
                         Vector l = new Vector();
                         if (i == 0)
                         {
@@ -119,34 +118,34 @@ public class IK_FABRIK_CUSTOM : MonoBehaviour
                         float dotProduct = Vector.dot(CT.normalize(), l.normalize());
                         float angle = (Mathf.Acos(dotProduct)) * Mathf.Rad2Deg;
 
-
                         if (angle > copy[i].angle)
                         {
+                            // Length of the vector OC
                             float S = Mathf.Cos(angle) * Mathf.Rad2Deg * CT.module();
+                            // Point O (Projection of T on L)
                             Vector O = S * l.normalize();
+                            // Length of the Vector OT'
                             float M = Mathf.Tan(copy[i].angle) * Mathf.Rad2Deg * S;
+                            // Direction vector of the OT' vector
                             Vector OT = copy[i + 1].position - O;
+                            // Find the new T'
                             Vector newT = M * OT.normalize();
+                            // Set the position of the next joint on T'
                             copy[i + 1].position = newT;
-
                         }
                         else
                         {
                             float r = Vector.distance(copy[i + 1].position, copy[i].position);
-
-                            //float r = Vector3.Distance(copy[i + 1], copy[i]);
                             float lambda = distances[i] / r;
                             copy[i + 1].position = (1 - lambda) * copy[i].position + (lambda * copy[i + 1].position);
                         }
                     }
-
                     distance = Vector.distance(copy[copy.Length - 1].position, Vector.vector3ToVector(target.position));
-                    //distance = Vector3.Distance(copy[copy.Length - 1], target.position);
 #endif
 
 
                     // NO Constrians
-#if true
+#if false
                     // STAGE 1: FORWARD REACHING
                     copy[copy.Length - 1].position = Vector.vector3ToVector(target.position);
                     //copy[copy.Length - 1] = target.position;
