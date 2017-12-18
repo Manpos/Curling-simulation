@@ -85,7 +85,7 @@ public class IK_FABRIK_CUSTOM : MonoBehaviour
 
 
                     // Constrians
-#if true
+#if false
                     // STAGE 1: FORWARD REACHING
                     copy[copy.Length - 1].position = Vector.vector3ToVector(target.position);
                     
@@ -145,7 +145,7 @@ public class IK_FABRIK_CUSTOM : MonoBehaviour
 
 
                     // NO Constrians
-#if false
+#if true
                     // STAGE 1: FORWARD REACHING
                     copy[copy.Length - 1].position = Vector.vector3ToVector(target.position);
                     //copy[copy.Length - 1] = target.position;
