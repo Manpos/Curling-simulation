@@ -46,35 +46,7 @@ public class CurlingStone : MonoBehaviour {
 
     public void EulerStep(float dt) {
 
-        // New velocity, new position, new angular velocity, orientation
-        Vector vNew = new Vector();
-        Vector sNew = new Vector();
-        Vector wNew = new Vector();
-        Vector rNew = new Vector();
-
-        // Calculate angular velocity
-        wNew.z = (gravity * (frictionCoeficientF - frictionCoeficientB) / radius) * dt + w.z;
-
-        // Calculate new angle
-        rNew.z = wNew.z * dt + r.z;
-
-        // Calculate velocity
-        vNew.x = -((frictionCoeficientF + frictionCoeficientB) / 2) * gravity * dt + v.x;
-        vNew.y = wNew.z * radius;
-
-        // Calculate new position
-        sNew.x = s.x + v.x * dt - 0.5f * gravity * ((frictionCoeficientF + frictionCoeficientB) / 2) * (dt * dt);
-        sNew.y = s.y + vNew.y * dt;
-
-        // Update velocity and position
-        s = sNew;
-        v = vNew;
-        w = wNew;
-        r = rNew;
         
-
-        transform.position = new Vector3(s.x, s.y,0);
-        transform.rotation = new Quaternion(0, 0, 1, r.z);
 
     }
 

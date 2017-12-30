@@ -83,7 +83,7 @@ public class MyQuaternion {
 
     public MyQuaternion Inverse()
     {
-        return Conjugate();
+        return normalized().Conjugate();
     }
 
 }
