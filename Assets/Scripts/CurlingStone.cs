@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class CurlingStone : MonoBehaviour {
 
-    public float vXinit, vYinit, wZInit;
-    public float mass = 20, orientation, radius = 1.0f, frictionCoeficientF = 0.4f, frictionCoeficientB = 0.6f, restitutionCoeficent;
-    public float gravity = 9.81f;
+    public float mass = 20;
+
+
+    //public float vXinit, vYinit, wZInit;
+    //public float mass = 20, orientation, radius = 1.0f, frictionCoeficientF = 0.4f, frictionCoeficientB = 0.6f, restitutionCoeficent;
+    //public float gravity = 9.81f;
 
     // Velocity and position
     private Vector v;
@@ -18,21 +21,21 @@ public class CurlingStone : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        v = new Vector();
-        s = new Vector();
+        //v = new Vector();
+        //s = new Vector();
 
-        w = new Vector();
-        r = new Vector();
+        //w = new Vector();
+        //r = new Vector();
         
 
-        s.x = transform.position.x;
-        s.y = transform.position.y;
+        //s.x = transform.position.x;
+        //s.y = transform.position.y;
 
-        v.x = vXinit;
-        v.y = vYinit;
+        //v.x = vXinit;
+        //v.y = vYinit;
 
-        w.z = wZInit;
-        r.z = transform.rotation.z;
+        //w.z = wZInit;
+        //r.z = transform.rotation.z;
 	}
 	
 	// Update is called once per frame
