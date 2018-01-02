@@ -37,6 +37,17 @@ public class MyQuaternion {
         return new MyQuaternion(q.x * f, q.y * f, q.z * f, q.w * f); ;
     }
 
+    public static MyQuaternion operator +(MyQuaternion q, MyQuaternion r)
+    {
+        MyQuaternion t = new MyQuaternion();
+        t.w = (q.x + r.x);
+        t.x = (q.y + r.y);
+        t.y = (q.z + r.z);
+        t.z = (q.w + r.w);
+        return t;
+    }
+
+
     public static MyQuaternion axisAngle(Vector v, float angle)
     {
         angle = angle * Mathf.Deg2Rad;

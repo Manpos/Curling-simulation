@@ -82,6 +82,11 @@ public class Vector {
         return new Vector(v.x * f, v.y * f, v.z * f);
     }
 
+    public static Vector operator *(Vector v, float f)
+    {
+        return new Vector(v.x * f, v.y * f, v.z * f);
+    }
+
     public static Vector operator /(Vector v, float f)
     {
         return new Vector(v.x / f, v.y / f, v.z / f);
