@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class SimulationOptions
 {
-    public static float RADIUS = 1.0f;
+    public static float RADIUS = 0.20f;
     public static float HEIGHT = 1.0f;
     public static float MASS = 20.0f;
     public static float GRAVITY = 9.81f;
@@ -114,23 +114,26 @@ public class CurlingStone : MonoBehaviour {
 
         // Integrate equations of motion
 
-        // Calculate acceleration
-        acceleration = forces / mass;
-
-        // Calculate Velocity
-        velocity += acceleration * dt;
-
-        // Calculate Position
-        position += velocity * dt;
-
         // Rotations
-        angularAcceleration = moments/inertia;
+        angularAcceleration = moments / inertia;
 
         angularVelocity += angularAcceleration * dt;
 
         float newAngle = angularVelocity.z * dt;
 
-        orientation = MyQuaternion.axisAngle(new Vector(0f, 0f, 1f), newAngle) * orientation;
+        // Calculate acceleration
+        acceleration = forces / mass;
+
+        // Calculate Velocity
+        velocity += acceleration * dt;
+        velocity.y = angularVelocity.module() * radius;
+
+        // Calculate Position
+        position += velocity * dt;
+
+        
+
+        orientation = MyQuaternion.axisAngle(new Vector(0f, 0f, 1f), newAngle * Mathf.Rad2Deg) * orientation;
 
         transform.rotation = new Quaternion(orientation.x, orientation.y, orientation.z, orientation.w);
 
@@ -143,7 +146,7 @@ public class CurlingStone : MonoBehaviour {
         forces = new Vector();
         forces = (-1f) * velocity.normalize() * (SimulationOptions.FRICTION_COEFFICIENT_GROUND * mass * (SimulationOptions.GRAVITY));
         moments = new Vector();
-        moments = -(1f) * angularVelocity.normalize() * (SimulationOptions.FRICTION_COEFFICIENT_GROUND * mass * (SimulationOptions.GRAVITY)) * radius * Mathf.Rad2Deg* (Mathf.Sin(90));
+        moments = -(1f) * angularVelocity.normalize() * (SimulationOptions.FRICTION_COEFFICIENT_GROUND * mass * (SimulationOptions.GRAVITY)) * radius * (Mathf.Sin(90));
 
     }
 
