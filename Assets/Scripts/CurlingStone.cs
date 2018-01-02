@@ -5,7 +5,6 @@ using UnityEngine;
 public static class SimulationOptions
 {
     public static float RADIUS = 0.145f;
-    public static float HEIGHT = 0.20f;
     public static float MASS = 20.0f;
     public static float GRAVITY = 9.81f;
     public static float COEFFICIENT_OF_RESTITUTION = 0.8f;
@@ -26,12 +25,14 @@ public class CurlingStone : MonoBehaviour {
     public Vector forces;
     public Vector moments;
     private float radius;
-    private float height;
 
     //Shot parameters
     public float initialVelocityX;
 
-    public float initialAngularVelocity;
+    public float minInitialAngularVelocity;
+    public float maxInitialAngularVelocity;
+
+    private bool once = true;
     
 
 	// Use this for initialization
@@ -41,11 +42,10 @@ public class CurlingStone : MonoBehaviour {
 
         // Set initial velocity
         velocity = new Vector();
-        velocity.x = initialVelocityX;
 
         // Set initial angular velocity
         angularVelocity = new Vector();
-        angularVelocity.z = initialAngularVelocity;
+        //angularVelocity.z = maxInitialAngularVelocity;
 
         // Set initial angular acceleration
         angularAcceleration = new Vector();
@@ -66,13 +66,21 @@ public class CurlingStone : MonoBehaviour {
         // Set mass, radius and height
         mass = SimulationOptions.MASS;
         radius = SimulationOptions.RADIUS;
-        height = SimulationOptions.HEIGHT;
 
     }
 	
 	// Update is called once per frame
 	void Update () {
-        EulerStep(Time.deltaTime);		
+        if (VelocityMeter.shoot)
+        {
+            if (once)
+            {
+                velocity.x = initialVelocityX * VelocityMeter.finalVelocityValue;
+                angularVelocity.z = Remap(0f, 1f, maxInitialAngularVelocity, minInitialAngularVelocity, VelocityMeter.finalSpinValue);
+                once = false;
+            }
+            EulerStep(Time.deltaTime);
+        }        		
 	}
 
     public void CalcMoment() { }
@@ -97,13 +105,12 @@ public class CurlingStone : MonoBehaviour {
 
         // Calculate Velocity
         velocity += acceleration * dt;
-        velocity.y = angularVelocity.module() * radius;
+        velocity.y = angularVelocity.z * radius;
 
         // Calculate Position
-        position += velocity * dt;
+        position += velocity * dt;        
 
-        
-
+        // Set values to the transform of the object
         orientation = MyQuaternion.axisAngle(new Vector(0f, 0f, 1f), newAngle * Mathf.Rad2Deg) * orientation;
 
         transform.rotation = new Quaternion(orientation.x, orientation.y, orientation.z, orientation.w);
@@ -123,4 +130,9 @@ public class CurlingStone : MonoBehaviour {
 
     public void CollisionCheck() { }
     public void ApplyImpulse() { }
+
+    public float Remap(float a1, float a2, float b1, float b2, float s)
+    {
+        return b1 + (s - a1) * (b2 - b1) / (a2 - a1);
+    }
 }
