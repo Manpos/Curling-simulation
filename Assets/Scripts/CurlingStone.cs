@@ -2,15 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class SimulationOptions
-{
-    public static float RADIUS = 0.145f;
-    public static float MASS = 20.0f;
-    public static float GRAVITY = 9.81f;
-    public static float COEFFICIENT_OF_RESTITUTION = 0.8f;
-    public static float FRICTION_COEFFICIENT_GROUND = 0.02f;
-}
-
 public class CurlingStone : MonoBehaviour {
 
     private float mass;
@@ -27,12 +18,19 @@ public class CurlingStone : MonoBehaviour {
     private float radius;
 
     //Shot parameters
-    public float initialVelocityX;
+    public float minInitialVelocityX;
+    public float maxInitialVelocityX;
 
     public float minInitialAngularVelocity;
     public float maxInitialAngularVelocity;
 
+    private bool startShot = false;
     private bool once = true;
+
+    private float startVelocity;
+    private float startSpin;
+
+    private Vector previousVelocity;
     
 
 	// Use this for initialization
@@ -42,10 +40,10 @@ public class CurlingStone : MonoBehaviour {
 
         // Set initial velocity
         velocity = new Vector();
+        previousVelocity = new Vector();
 
         // Set initial angular velocity
         angularVelocity = new Vector();
-        //angularVelocity.z = maxInitialAngularVelocity;
 
         // Set initial angular acceleration
         angularAcceleration = new Vector();
@@ -71,12 +69,12 @@ public class CurlingStone : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (VelocityMeter.shoot)
+        if (startShot)
         {
             if (once)
             {
-                velocity.x = initialVelocityX * VelocityMeter.finalVelocityValue;
-                angularVelocity.z = Remap(0f, 1f, maxInitialAngularVelocity, minInitialAngularVelocity, VelocityMeter.finalSpinValue);
+                velocity.x = Remap(0f, 1f, minInitialVelocityX, maxInitialVelocityX, startVelocity);
+                angularVelocity.z = Remap(0f, 1f, maxInitialAngularVelocity, minInitialAngularVelocity, startSpin);
                 once = false;
             }
             EulerStep(Time.deltaTime);
@@ -104,6 +102,7 @@ public class CurlingStone : MonoBehaviour {
         acceleration = forces / mass;
 
         // Calculate Velocity
+        previousVelocity = velocity;
         velocity += acceleration * dt;
         velocity.y = angularVelocity.z * radius;
 
@@ -134,5 +133,30 @@ public class CurlingStone : MonoBehaviour {
     public float Remap(float a1, float a2, float b1, float b2, float s)
     {
         return b1 + (s - a1) * (b2 - b1) / (a2 - a1);
+    }
+
+    public void SetStartShot(bool b)
+    {
+        startShot = b;
+    }
+
+    public bool GetStartShot()
+    {
+        return startShot;
+    }
+
+    public void SetStartVelocity(float f)
+    {
+        startVelocity = f;
+    }
+
+    public void SetStartSpin(float f)
+    {
+        startSpin = f;
+    }
+
+    public Vector GetPreviousVelocity()
+    {
+        return previousVelocity;
     }
 }

@@ -4,17 +4,17 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class VelocityMeter : MonoBehaviour {
-
+    public Vector3 initialPosition; 
     public Image velocityBar;
     public Image spinBar;
     public GameObject velocityParent;
     public GameObject spinParent;
-    private static bool progressUp;
+    private bool progressUp;
     private bool velocityShot;
     private bool spinShot;
-    public static float finalVelocityValue;
-    public static float finalSpinValue;
-    public static bool shoot;
+    private float finalVelocityValue;
+    private float finalSpinValue;
+    private bool shoot;
 
     void Start()
     {
@@ -89,10 +89,36 @@ public class VelocityMeter : MonoBehaviour {
         
     }
 
-    public static void ResetVariables()
-    {        
+    public void ResetVariables()
+    {
+        velocityParent.SetActive(true);
+        spinParent.SetActive(false);
+        velocityBar.fillAmount = 0f;
+        spinBar.fillAmount = 0f;
+        velocityShot = true;
         progressUp = true;
         shoot = false;
+        spinShot = false;
+    }
+
+    public bool GetShoot()
+    {
+        return shoot;
+    }
+
+    public void SetShoot(bool b)
+    {
+        shoot = b;
+    }
+
+    public float GetFinalVelocity()
+    {
+        return finalVelocityValue;
+    }
+
+    public float GetFinalSpin()
+    {
+        return finalSpinValue;
     }
 
 }

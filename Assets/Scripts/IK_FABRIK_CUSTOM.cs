@@ -218,6 +218,10 @@ public class IK_FABRIK_CUSTOM : MonoBehaviour
         }
     }
 
+    public void SetTarget(Transform t) {
+        target = t;
+    }
+
 }
 
 #endif
