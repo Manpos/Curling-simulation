@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 public class CurlingStone : MonoBehaviour {
 
@@ -10,6 +11,9 @@ public class CurlingStone : MonoBehaviour {
     public Vector velocityBody;
     public Vector acceleration;
     public Vector angularAcceleration;
+
+    public LineRenderer accLine;
+    public LineRenderer velLine;
 
     public Vector angularVelocity;
     public MyQuaternion orientation;
@@ -54,9 +58,6 @@ public class CurlingStone : MonoBehaviour {
         // Set initial forces and moments
         forces = new Vector();
         moments = new Vector();
-
-        // Set velocity in space coordinates to 0
-        velocityBody = new Vector();
 
         // Set the initial orientation
         orientation = MyQuaternion.QuatToMyQuat(transform.rotation);
@@ -116,6 +117,7 @@ public class CurlingStone : MonoBehaviour {
 
         transform.position = Vector.vectorToVector3(position);
 
+        DrawWireframe();
     }
 
     public void CalculateForces()
@@ -129,6 +131,15 @@ public class CurlingStone : MonoBehaviour {
 
     public void CollisionCheck() { }
     public void ApplyImpulse() { }
+
+
+    public void DrawWireframe()
+    {
+        Vector3[] positions = new[] { Vector.vectorToVector3(position), Vector.vectorToVector3(position + acceleration) };
+        accLine.SetPositions(positions);
+        positions = new[] { Vector.vectorToVector3(position), Vector.vectorToVector3(position + velocity) };
+        velLine.SetPositions(positions);
+    }
 
     public float Remap(float a1, float a2, float b1, float b2, float s)
     {
@@ -158,5 +169,26 @@ public class CurlingStone : MonoBehaviour {
     public Vector GetPreviousVelocity()
     {
         return previousVelocity;
+    }
+
+    public void ResetVariables()
+    {
+        // Set initial velocity
+        velocity = new Vector();
+        previousVelocity = new Vector();
+
+        // Set initial angular velocity
+        angularVelocity = new Vector();
+
+        // Set initial angular acceleration
+        angularAcceleration = new Vector();
+
+        // Set initial acceleration
+        acceleration = new Vector();
+
+        // Set initial forces and moments
+        forces = new Vector();
+        moments = new Vector();
+        
     }
 }

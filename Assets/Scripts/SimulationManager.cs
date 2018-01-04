@@ -78,6 +78,7 @@ public class SimulationManager : MonoBehaviour {
     public void ResetSimulation()
     {
         vMeterScript.ResetVariables();
+        curlingScript.ResetVariables();
         stopped = false;
         resetTimer = 3f;
         stone = Instantiate(stonePrefab);
