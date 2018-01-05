@@ -39,7 +39,12 @@ public class Vector {
     public Vector normalize()
     {
         float module = this.module();
-        return new Vector(x / module, y / module, z / module);
+        if (module != 0f)
+        {
+            return new Vector(x / module, y / module, z / module);
+        }
+        else return new Vector();
+        
     }
 
     public static float module(Vector v)
