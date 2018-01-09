@@ -181,9 +181,7 @@ public class IK_FABRIK_CUSTOM : MonoBehaviour
             {
                 Vector init = Vector.vector3ToVector(joints[i + 1].position) - Vector.vector3ToVector(joints[i].position);
                 Vector now = copy[i + 1].position - copy[i].position;
-                //Vector3 now = copy[i + 1] - copy[i];
 
-                //float angle = Mathf.Acos(Vector3.Dot(init.normalized, now.normalized)) * Mathf.Rad2Deg;
                 float cosa = Vector.dot(init.normalize(), now.normalize());
                 float sina = Vector.cross(init.normalize(), now.normalize()).module();
 
@@ -205,13 +203,7 @@ public class IK_FABRIK_CUSTOM : MonoBehaviour
                     Quaternion quatResult = new Quaternion(result.x, result.y, result.z, result.w);
                     joints[i].rotation = quatResult;
                 }
-                
-                //Vector3 axis = new Vector3(axisV.x, axisV.y, axisV.z);
-
-               
-                //Quaternion rotated = Quaternion.AngleAxis(angle, axis);
-                //TODO 
-                
+                               
                 joints[i + 1].position.Set(copy[i + 1].position.x, copy[i + 1].position.y, copy[i + 1].position.z);
 
             }

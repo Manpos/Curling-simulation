@@ -133,7 +133,7 @@ public class CurlingStone : MonoBehaviour {
         if (Mathf.Abs(velocity.module()) < 0.1 && GetPreviousVelocity().module() != 0 && hasCollided)
         {
             startShot = false;
-            Debug.Log("S'ha aturat");
+            //Debug.Log("S'ha aturat");
             haveAlreadyCollided = false;
             hasCollided = false;
         }

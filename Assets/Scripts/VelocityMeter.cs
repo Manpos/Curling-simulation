@@ -89,6 +89,7 @@ public class VelocityMeter : MonoBehaviour {
         
     }
 
+    // Resets the variables for the next shot
     public void ResetVariables()
     {
         velocityParent.SetActive(true);
@@ -101,21 +102,25 @@ public class VelocityMeter : MonoBehaviour {
         spinShot = false;
     }
 
+    // Returns if the stone has been shot
     public bool GetShoot()
     {
         return shoot;
     }
 
+    // Changes the value of the shoot bool
     public void SetShoot(bool b)
     {
         shoot = b;
     }
 
+    // Returns the vaulue of the horizontal bar
     public float GetFinalVelocity()
     {
         return finalVelocityValue;
     }
 
+    // Returns the value of the spin bar
     public float GetFinalSpin()
     {
         return finalSpinValue;

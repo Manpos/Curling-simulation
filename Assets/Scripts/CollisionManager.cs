@@ -63,7 +63,7 @@ public class CollisionManager : MonoBehaviour {
                 // And compare it with all the others on the list
                 for (int j = i + 1; j < stonesList.Count; j++)
                 {
-                                            // If there's collision
+                        // If there's collision
                         if (Vector.distance(stonesList[i].position, stonesList[j].position) < (stonesList[i].GetRadius() + stonesList[j].GetRadius()))
                         {
                             if (!stonesList[i].haveAlreadyCollided)
@@ -85,13 +85,10 @@ public class CollisionManager : MonoBehaviour {
                             }
                                 stonesList[i].ApplyImpulse(newVelocity2, newAngularVelocity2);
                                 stonesList[j].ApplyImpulse(newVelocity, newAngularVelocity);
-                                //stonesList[i].resetSimulationAfterCollision = true;  
 
                                 stonesList[i].SetStartShot(true);
-                                //stonesList[j].SetStartShot(true);
 
                                 stonesList[i].hasCollided = true;
-                            //stonesList[j].hasCollided = true;
 
                             stonesList[i].haveAlreadyCollided = true;
 
@@ -115,17 +112,24 @@ public class CollisionManager : MonoBehaviour {
 
     public void CalculateCollision(int i, int j)
     {
-         Vector normal2 = (stonesList[i].position - stonesList[j].position).normalize();
+         Vector normal = (stonesList[i].position - stonesList[j].position).normalize();
 
-        float relativeNormal = Vector.dot((stonesList[j].velocity - stonesList[i].velocity), normal2);
+        float relativeNormal = Vector.dot((stonesList[j].velocity - stonesList[i].velocity), normal);
 
          float newVelocity2Magnitude = relativeNormal * (0.9f + 1) / 2;
 
          float newVelocityMagnitude = stonesList[j].velocity.module() - newVelocity2Magnitude;
 
-         newVelocity2 = newVelocity2Magnitude * normal2;
+         newVelocity2 = newVelocity2Magnitude * normal;
 
-        Vector tangent = new Vector(-normal2.y, normal2.x, normal2.z);
+        Vector tangent;
+
+        if (normal.y > 0)
+        {
+            tangent = new Vector(normal.y, -normal.x, normal.z);
+        }
+        else  tangent = new Vector(-normal.y, normal.x, normal.z);
+
 
         newVelocity = newVelocityMagnitude * tangent.normalize();
         
