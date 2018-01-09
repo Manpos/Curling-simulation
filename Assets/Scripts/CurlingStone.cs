@@ -28,6 +28,9 @@ public class CurlingStone : MonoBehaviour {
     public float minInitialAngularVelocity;
     public float maxInitialAngularVelocity;
 
+    public bool hasCollided;
+    public bool haveAlreadyCollided;
+
     private bool startShot = false;
     private bool once = true;
 
@@ -66,6 +69,8 @@ public class CurlingStone : MonoBehaviour {
         mass = SimulationOptions.MASS;
         radius = SimulationOptions.RADIUS;
 
+        hasCollided = false;
+        haveAlreadyCollided = false;
     }
 	
 	// Update is called once per frame
@@ -82,7 +87,14 @@ public class CurlingStone : MonoBehaviour {
         }        		
 	}
 
-    public void CalcMoment() { }
+    public void ApplyImpulse(Vector vel, Vector angularVel) {
+        velocity = vel;
+        angularVelocity = angularVelocity; 
+        //startSpin = 0.2f;
+        startShot = true;
+    }
+
+    public void CalcMoment() {}
 
     public void EulerStep(float dt) {
 
@@ -105,7 +117,8 @@ public class CurlingStone : MonoBehaviour {
         // Calculate Velocity
         previousVelocity = velocity;
         velocity += acceleration * dt;
-        velocity.y = angularVelocity.z * radius;
+        if (!hasCollided)
+            velocity.y = angularVelocity.z * radius;
 
         // Calculate Position
         position += velocity * dt;        
@@ -117,6 +130,13 @@ public class CurlingStone : MonoBehaviour {
 
         transform.position = Vector.vectorToVector3(position);
 
+        if (Mathf.Abs(velocity.module()) < 0.1 && GetPreviousVelocity().module() != 0 && hasCollided)
+        {
+            startShot = false;
+            Debug.Log("S'ha aturat");
+            haveAlreadyCollided = false;
+            hasCollided = false;
+        }
         DrawWireframe();
     }
 
@@ -128,11 +148,7 @@ public class CurlingStone : MonoBehaviour {
         moments = -(1f) * angularVelocity.normalize() * (SimulationOptions.FRICTION_COEFFICIENT_GROUND * mass * (SimulationOptions.GRAVITY));
 
     }
-
-    public void CollisionCheck() { }
-    public void ApplyImpulse() { }
-
-
+    
     public void DrawWireframe()
     {
         Vector3[] positions = new[] { Vector.vectorToVector3(position), Vector.vectorToVector3(position + acceleration) };
@@ -169,6 +185,11 @@ public class CurlingStone : MonoBehaviour {
     public Vector GetPreviousVelocity()
     {
         return previousVelocity;
+    }
+
+    public float GetRadius()
+    {
+        return radius;
     }
 
     public void ResetVariables()

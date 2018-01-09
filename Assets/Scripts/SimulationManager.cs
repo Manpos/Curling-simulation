@@ -25,9 +25,11 @@ public class SimulationManager : MonoBehaviour {
     private IK_FABRIK_CUSTOM ikScript;
     private CurlingStone curlingScript;
     private CameraControler cameraScript;
+    
 
     private float resetTimer;
     private bool stopped;
+    private bool spaceBlock;
 
 	// Use this for initialization
 	void Start () {
@@ -37,39 +39,47 @@ public class SimulationManager : MonoBehaviour {
         cameraScript = camera.GetComponent<CameraControler>();
 
         cameraScript.SetPlayer(stone);
-
         stopped = false;
         resetTimer = 3f;
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update () {
 
         if (vMeterScript.GetShoot())
         {
             SetStoneParameters();
             vMeterScript.SetShoot(false);
-        }        
 
-        if(curlingScript.GetStartShot() && Mathf.Abs(curlingScript.velocity.module()) < 0.1 && curlingScript.GetPreviousVelocity().module() != 0)
+        }
+
+        if (curlingScript.GetStartShot() && Mathf.Abs(curlingScript.velocity.module()) < 0.1 && curlingScript.GetPreviousVelocity().module() != 0)
         {
-            Debug.Log("The Stone is stopped");            
+            //Debug.Log("The Stone is stopped");
             curlingScript.SetStartShot(false);
             stopped = true;
         }
 
         if (stopped)
         {
+            spaceBlock = false;
+            //curlingScript.haveAlreadyCollided = false;
             resetTimer -= Time.deltaTime;
             if(resetTimer <= 0)
             {
                 ResetSimulation();
             }
         }
-	}
+
+    }
 
     public void SetStoneParameters()
     {
+        if (!spaceBlock)
+        {
+            CollisionManager.AddStone(curlingScript);
+            spaceBlock = true;
+        }
         curlingScript.SetStartVelocity(vMeterScript.GetFinalVelocity());
         curlingScript.SetStartSpin(vMeterScript.GetFinalSpin());
         curlingScript.SetStartShot(vMeterScript.GetShoot());
@@ -93,6 +103,7 @@ public class SimulationManager : MonoBehaviour {
         ikScript.SetTarget(stone.transform);
 
         cameraScript.SetPlayer(stone);
+
     }
 
 }
